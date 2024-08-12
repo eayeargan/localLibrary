@@ -112,15 +112,15 @@ exports.book_create_post = [
 // Display book delete form on GET.
 exports.book_delete_get = asyncHandler(async(req, res, next)=>{
   const [book, allBookInstances] = await Promise.all([
-      Book.findById(req.params.id).exec(),
+      Book.findById(req.params.id).populate("author").populate("genre").exec(),
       BookInstance.find({
           book: req.params.id
-      }, "title summary").exec()
+      }).exec()
   ]);
   if(book === null){
       res.redirect("/catalog/books")
   }
-  res.render("author_book", {
+  res.render("book_delete", {
       title: "Delete Book",
       book: book,
       bookinstances: allBookInstances
