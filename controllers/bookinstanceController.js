@@ -74,7 +74,7 @@ exports.bookinstance_create_post = [
 ];
 
 exports.bookinstance_delete_get = asyncHandler(async(req, res, next)=>{
-    const bookInstance = await BookInstance.findById(req.params.id).exec();
+    const bookInstance = await BookInstance.findById(req.params.id).populate("book").exec();
     if (bookInstance === null){
         res.redirect("/catalog/bookinstances");
     }
@@ -85,17 +85,9 @@ exports.bookinstance_delete_get = asyncHandler(async(req, res, next)=>{
 });
 
 exports.bookinstance_delete_post = asyncHandler(async(req,res, next)=>{
-    const bookInstance = await BookInstance.findById(req.params.id).exec();
-    if (bookInstance === null){
-        res.render("bookinstance_delete", {
-            title: "Delete Bookinstance",
-            bookInstance: bookInstance
-        });
-        return;
-    } else {
-        await BookInstance.findByIdAndDelete(req.body.bookinstanceid);
-        res.redirect("/catalog/bookinstances");
-    }
+    await BookInstance.findByIdAndDelete(req.body.id);
+    res.redirect("/catalog/bookinstances");
+    
 });
 
 exports.bookinstance_update_get = asyncHandler(async(req, res, next)=>{
