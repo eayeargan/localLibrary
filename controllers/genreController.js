@@ -76,7 +76,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
     Book.find({genre: req.params.id}).exec()
   ]);
   if (genre === null){
-    res.redirect("catalog/genres");
+    res.redirect("/catalog/genres");
   }
   res.render("genre_delete",{
     title: "Delete Genre",
@@ -100,7 +100,7 @@ exports.genre_delete_post = asyncHandler(async (req, res, next) => {
     return;
   } else {
     await Genre.findByIdAndDelete(req.body.genreid);
-    res.redirect("catalog/genres");
+    res.redirect("/catalog/genres");
   }
 });
 
