@@ -85,6 +85,7 @@ exports.bookinstance_delete_get = asyncHandler(async(req, res, next)=>{
 });
 
 exports.bookinstance_delete_post = asyncHandler(async(req,res, next)=>{
+    //Going to assume I dont need to check that this bookinstance exists before deleting it
     await BookInstance.findByIdAndDelete(req.body.id);
     res.redirect("/catalog/bookinstances");
     
