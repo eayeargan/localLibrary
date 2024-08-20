@@ -121,9 +121,24 @@ exports.author_delete_post = asyncHandler(async(req, res, next)=>{
         res.redirect("/catalog/authors");
     }
 });
-
+// first name, family name, date of birth, date of death
 exports.author_update_get = asyncHandler(async(req, res, next)=>{
-    res.send('NOT IMPLEMENTED: Author update GET');
+    const [author, allBooksByAuthor] = await Promise.all([
+        Author.findById(req.params.id).exec(),
+        Book.find({
+            author: req.params.id
+        }, "title summary").exec()
+    ]);
+    if (author === null){
+        const err = new Error("Author not found");
+        err.status = 404;
+        return next(err);
+    }
+    res.render("author_form", {
+        title: "Update Author",
+        all_books: allBooksByAuthor,
+        author: author
+    });
 });
 
 exports.author_update_post = asyncHandler(async(req,res, next)=>{
