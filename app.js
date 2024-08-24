@@ -9,25 +9,42 @@ const usersRouter = require('./routes/users');
 const pizzaRouter = require('./routes/pizza');
 const catalogRouter = require('./routes/catalog');
 const mgdbCreds = require('./db_creds/creds');
+const compression = require("compression");
+const helmet = require("helmet");
+
 
 const app = express();
+
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+  windowsMs: 1*60*1000,
+  max: 20
+});
 
 //Connect to MGDB
 const mongoose = require('mongoose');
 const mgdb_url = require('./db_creds/creds');
 mongoose.set('strictQuery', false);
-const mongoDB = mgdb_url;
+const dev_db_url = mgdb_url;
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 main().catch((err)=>console.log(err));
 async function main(){
   await mongoose.connect(mongoDB);
-  console.log('attempting to connect to mgdb')
-}
+  //console.log('attempting to connect to mgdb')
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(limiter)
+app.use(helmet.contentSecurityPolicy({
+  directives:{
+    "script-src":["'self'", "code.jquery.com","cdn.jsdelivr.net"],
+  },
+}));
+app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
