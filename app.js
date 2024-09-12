@@ -14,13 +14,13 @@ const helmet = require("helmet");
 
 
 const app = express();
-
+/*
 const RateLimit = require("express-rate-limit");
 const limiter = RateLimit({
   windowsMs: 1*60*1000,
   max: 20
 });
-
+*/
 //Connect to MGDB
 const mongoose = require('mongoose');
 const mgdb_url = require('./db_creds/creds');
@@ -38,7 +38,7 @@ async function main(){
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(limiter)
+//app.use(limiter)
 app.use(helmet.contentSecurityPolicy({
   directives:{
     "script-src":["'self'", "code.jquery.com","cdn.jsdelivr.net"],
